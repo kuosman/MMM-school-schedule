@@ -111,7 +111,7 @@ Module.register('MMM-school-schedule', {
 				var localeDay = weekdaysCurrentLoc[index];
 				var thead_tr_th_day = document.createElement('th');
 
-				thead_tr_th_day.className = 'school-schedule-th bright';
+				thead_tr_th_day.className = 'school-schedule-th';
 				thead_tr_th_day.appendChild(
 					document.createTextNode(localeDay.toUpperCase())
 				);
