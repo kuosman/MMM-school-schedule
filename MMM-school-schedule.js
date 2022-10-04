@@ -94,7 +94,7 @@ Module.register('MMM-school-schedule', {
 		thead_tr_th_clock.appendChild(
 			document.createTextNode(this.translate('clock'))
 		);
-		thead_tr_th_clock.className = 'school-schedule-th bright';
+		thead_tr_th_clock.className = 'school-schedule-th';
 		thead_tr.appendChild(thead_tr_th_clock);
 
 		// Create body
