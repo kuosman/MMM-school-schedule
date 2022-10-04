@@ -94,7 +94,7 @@ Module.register('MMM-school-schedule', {
 		thead_tr_th_clock.appendChild(
 			document.createTextNode(this.translate('clock'))
 		);
-		thead_tr_th_clock.className = 'school-schedule-th';
+		thead_tr_th_clock.className = 'school-schedule-th bright';
 		thead_tr.appendChild(thead_tr_th_clock);
 
 		// Create body
@@ -111,7 +111,7 @@ Module.register('MMM-school-schedule', {
 				var localeDay = weekdaysCurrentLoc[index];
 				var thead_tr_th_day = document.createElement('th');
 
-				thead_tr_th_day.className = 'school-schedule-th';
+				thead_tr_th_day.className = 'school-schedule-th bright';
 				thead_tr_th_day.appendChild(
 					document.createTextNode(localeDay.toUpperCase())
 				);
@@ -123,7 +123,7 @@ Module.register('MMM-school-schedule', {
 		times.forEach((t,i) => {
 			var tbody_tr = document.createElement('tr');
 			var tbody_tr_td = document.createElement('td');
-			tbody_tr_td.className = 'school-schedule-td';
+			tbody_tr_td.className = 'school-schedule-td bright';
 			tbody_tr_td.appendChild(
 				document.createTextNode(t.toUpperCase())
 			);
@@ -136,7 +136,7 @@ Module.register('MMM-school-schedule', {
 					var text = d[i] || '';
 					var tbody_tr_td_day = document.createElement('td');
 					var activeClass = lowerCaseDay === dow ? 'active' : '';
-					tbody_tr_td_day.className = 'school-schedule-td ' + activeClass;
+					tbody_tr_td_day.className = 'school-schedule-td bright ' + activeClass;
 					tbody_tr_td_day.appendChild(
 						document.createTextNode(text)
 					);

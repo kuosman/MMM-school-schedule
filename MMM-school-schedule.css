@@ -4,11 +4,11 @@ table.school-schedule-table {
     font-size: 14px;
     font-family: sans-serif;
     /*box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);*/
-    border: 1px solid rgb(153,153,153);
+    border: 1px solid #fff;
 }
 
 table.school-schedule-table thead tr {
-    background-color: rgb(153,153,153);
+    background-color: #fff;
     color: #000000;
     text-align: left;
 }
@@ -17,11 +17,16 @@ table.school-schedule-table thead tr {
 .school-schedule-td {
     padding: 6px 6px;
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
     font-family: var(--font-primary), sans-serif;
     font-weight: 300;
     line-height: 1.25;
     width: 85px;
+}
+
+table.school-schedule-table th:first-child,
+table.school-schedule-table td:first-child {
+    width: 100px;
 }
 
 .school-schedule-th {
