@@ -1,6 +1,6 @@
 {
     "name": "MMM-school-schedule",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Module which shows school schedules on your MagicMirror",
     "main": "MMM-school-schedule.js",
     "author": "Marko Kuosmanen",
