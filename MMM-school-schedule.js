@@ -10,174 +10,194 @@
  *  MIT Licenced.
  */
 Module.register('MMM-school-schedule', {
-	// Default module config
-	defaults: {
-		updateInterval: 1 * 60 * 60 * 1000,     // 1 hour
-		fadeSpeed: 4000
-	},
+    // Default module config
+    defaults: {
+        updateInterval: 1 * 60 * 60 * 1000, // 1 hour
+        fadeSpeed: 4000,
+    },
 
-	requiresVersion: '2.1.0', // Required version of MagicMirror
+    requiresVersion: '2.1.0', // Required version of MagicMirror
 
-	/**
-	 * Get styles
-	 *
-	 * @function getStyles
-	 * @returns {Array} styles array
-	 */
-	getStyles: function () {
-		return [
-		  this.file('MMM-school-schedule.css')
-		];
-	},
+    /**
+     * Get styles
+     *
+     * @function getStyles
+     * @returns {Array} styles array
+     */
+    getStyles: function () {
+        return [this.file('MMM-school-schedule.css')];
+    },
 
-	/**
-	 * Get translations
-	 *
-	 * @function getTranslations
-	 * @returns {Array} translations jsons
-	 */
-	getTranslations: function() {
-		return {
-			en: 'translations/en.json',
-			fi: 'translations/fi.json'
-		};
-	},
+    /**
+     * Get translations
+     *
+     * @function getTranslations
+     * @returns {Array} translations jsons
+     */
+    getTranslations: function () {
+        return {
+            en: 'translations/en.json',
+            fi: 'translations/fi.json',
+        };
+    },
 
-	/**
-	 * Start module after all modules have been loaded
-	 * by the MagicMirror framework
-	 *
-	 * @function start
-	 */
-	start: function() {
-		// Schedule update timer.
-		var self = this;
-		setInterval(function() {
-			self.updateDom(self.config.fadeSpeed);
-		}, this.config.updateInterval);
+    /**
+     * Start module after all modules have been loaded
+     * by the MagicMirror framework
+     *
+     * @function start
+     */
+    start: function () {
+        // Schedule update timer.
+        var self = this;
+        setInterval(function () {
+            self.updateDom(self.config.fadeSpeed);
+        }, this.config.updateInterval);
 
-		this.loaded = true;
-	},
+        this.loaded = true;
+    },
 
-	/**
-	 * Create the module header.
-	 *
-	 * @function getHeader
-	 * @returns {string} header
-	 */
-	getHeader: function() {
-		var header = this.data.header;
-		return header;
-	},
+    /**
+     * Create the module header.
+     *
+     * @function getHeader
+     * @returns {string} header
+     */
+    getHeader: function () {
+        var header = this.data.header;
+        return header;
+    },
 
-	/**
-	 * Get dom
-	 *
-	 * @function getDom
-	 * @returns {object} html wrapper
-	 */
-	getDom: function() {
-		var date = this.getDisplayDate();
+    getValidFirstSchedule: function () {
+        const schedules = this.config.schedules;
+        let validSchedule = null;
 
-		// get day of week
-		var dow = date.locale('en').format('dd').toLowerCase();
-		var days = this.config.schedule.days;
-		var times = this.config.schedule.times;
+        if (schedules) {
+            const currentDay = moment();
+            validSchedule = schedules.find((schedule) => {
+                return !schedule.valid
+                    ? schedule
+                    : schedule.valid.from && schedule.valid.to
+                    ? moment(schedule.valid.from).isSameOrBefore(currentDay) &&
+                      moment(schedule.valid.to).isSameOrAfter(currentDay)
+                    : schedule.valid.from
+                    ? moment(schedule.valid.from).isSameOrBefore(currentDay)
+                    : schedule.valid.to
+                    ? moment(schedule.valid.to).isSameOrAfter(currentDay)
+                    : true;
+            });
+        }
+        return validSchedule;
+    },
 
-		var wrapper = document.createElement('table');
-		wrapper.className = 'school-schedule-table';
+    /**
+     * Get dom
+     *
+     * @function getDom
+     * @returns {object} html wrapper
+     */
+    getDom: function () {
+        const schedule = this.getValidFirstSchedule();
+        if (!schedule) {
+            return document.createElement('div');
+        }
 
-		// Create header
-		var thead = document.createElement('thead');
-		var thead_tr = document.createElement('tr');
-		var thead_tr_th_clock = document.createElement('th');
-		thead_tr_th_clock.appendChild(
-			document.createTextNode(this.translate('clock'))
-		);
-		thead_tr_th_clock.className = 'school-schedule-th';
-		thead_tr.appendChild(thead_tr_th_clock);
+        const date = this.getDisplayDate();
 
-		// Create body
-		var tbody = document.createElement('tbody');
+        // get day of week
+        const dow = date.locale('en').format('dd').toLowerCase();
+        const days = schedule.days;
+        const times = schedule.times;
 
-		var weekdaysEn = moment.localeData('en-us').weekdaysMin();
-		var weekdaysCurrentLoc = moment.weekdaysMin();
-		console.log(weekdaysEn, weekdaysCurrentLoc);
+        var wrapper = document.createElement('table');
+        wrapper.className = 'school-schedule-table';
 
-		// Create weekdays
-		weekdaysEn.forEach((day, index) => {
-			var lowerCaseDay = day.toLowerCase();
-			if (days[lowerCaseDay]) {
-				var localeDay = weekdaysCurrentLoc[index];
-				var thead_tr_th_day = document.createElement('th');
+        // Create header
+        const thead = document.createElement('thead');
+        const thead_tr = document.createElement('tr');
+        const thead_tr_th_clock = document.createElement('th');
+        thead_tr_th_clock.appendChild(
+            document.createTextNode(this.translate('clock'))
+        );
+        thead_tr_th_clock.className = 'school-schedule-th';
+        thead_tr.appendChild(thead_tr_th_clock);
 
-				thead_tr_th_day.className = 'school-schedule-th';
-				thead_tr_th_day.appendChild(
-					document.createTextNode(localeDay.toUpperCase())
-				);
-				thead_tr.appendChild(thead_tr_th_day);
-			}
-		});
+        // Create body
+        const tbody = document.createElement('tbody');
 
-		// Create times
-		times.forEach((t,i) => {
-			var tbody_tr = document.createElement('tr');
-			var tbody_tr_td = document.createElement('td');
-			tbody_tr_td.className = 'school-schedule-td bright';
-			tbody_tr_td.appendChild(
-				document.createTextNode(t.toUpperCase())
-			);
-			tbody_tr.appendChild(tbody_tr_td);
+        const weekdaysEn = moment.localeData('en-us').weekdaysMin();
+        const weekdaysCurrentLoc = moment.weekdaysMin();
 
-			weekdaysEn.forEach(day => {
-				var lowerCaseDay = day.toLowerCase();
-				if (days[lowerCaseDay]) {
-					var d = days[lowerCaseDay];
-					var text = d[i] || '';
-					var tbody_tr_td_day = document.createElement('td');
-					var activeClass = lowerCaseDay === dow ? 'active' : '';
-					tbody_tr_td_day.className = 'school-schedule-td bright ' + activeClass;
-					tbody_tr_td_day.appendChild(
-						document.createTextNode(text)
-					);
-					tbody_tr.appendChild(tbody_tr_td_day);
-				}
-			});
-			tbody.appendChild(tbody_tr);
-		});
+        // Create weekdays
+        weekdaysEn.forEach((day, index) => {
+            const lowerCaseDay = day.toLowerCase();
+            if (days[lowerCaseDay]) {
+                const localeDay = weekdaysCurrentLoc[index];
+                const thead_tr_th_day = document.createElement('th');
 
-		thead.appendChild(thead_tr);
-		wrapper.appendChild(thead);
-		wrapper.appendChild(tbody);
+                thead_tr_th_day.className = 'school-schedule-th';
+                thead_tr_th_day.appendChild(
+                    document.createTextNode(localeDay.toUpperCase())
+                );
+                thead_tr.appendChild(thead_tr_th_day);
+            }
+        });
 
-		return wrapper;
-	},
+        // Create times
+        times.forEach((t, i) => {
+            const tbody_tr = document.createElement('tr');
+            const tbody_tr_td = document.createElement('td');
+            tbody_tr_td.className = 'school-schedule-td bright';
+            tbody_tr_td.appendChild(document.createTextNode(t.toUpperCase()));
+            tbody_tr.appendChild(tbody_tr_td);
 
-	/**
-	 * Get display date
-	 *
-	 * @function getDisplayDate
-	 * @returns {object} date
-	 */
-	getDisplayDate: function() {
-		var threshold = moment().endOf('day');
+            weekdaysEn.forEach((day) => {
+                const lowerCaseDay = day.toLowerCase();
+                if (days[lowerCaseDay]) {
+                    const d = days[lowerCaseDay];
+                    const text = d[i] || '';
+                    const tbody_tr_td_day = document.createElement('td');
+                    const activeClass = lowerCaseDay === dow ? 'active' : '';
+                    tbody_tr_td_day.className =
+                        'school-schedule-td bright ' + activeClass;
+                    tbody_tr_td_day.appendChild(document.createTextNode(text));
+                    tbody_tr.appendChild(tbody_tr_td_day);
+                }
+            });
+            tbody.appendChild(tbody_tr);
+        });
 
-		// get the current time and increment by one day if threshold time has passed
-		var now  = moment();
-		if(now.isAfter(threshold)) {
-			now = now.add(1, 'day');
-		}
+        thead.appendChild(thead_tr);
+        wrapper.appendChild(thead);
+        wrapper.appendChild(tbody);
 
-		return now;
-	},
+        return wrapper;
+    },
 
-	/**
-	 * Get script files
-	 *
-	 * @returns {Array} script files
-	 */
-	getScripts: function() {
-		return ['moment.js'];
-	}
+    /**
+     * Get display date
+     *
+     * @function getDisplayDate
+     * @returns {object} date
+     */
+    getDisplayDate: function () {
+        var threshold = moment().endOf('day');
 
+        // get the current time and increment by one day if threshold time has passed
+        var now = moment();
+        if (now.isAfter(threshold)) {
+            now = now.add(1, 'day');
+        }
+
+        return now;
+    },
+
+    /**
+     * Get script files
+     *
+     * @returns {Array} script files
+     */
+    getScripts: function () {
+        return ['moment.js'];
+    },
 });
