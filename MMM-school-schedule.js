@@ -122,7 +122,7 @@ Module.register('MMM-school-schedule', {
             document.createTextNode(this.translate('clock'))
         );
         thead_tr_th_clock.className =
-            'school-schedule-th' + self.config.large ? ' large' : '';
+            'school-schedule-th' + (self.config.large ? ' large' : '');
         thead_tr.appendChild(thead_tr_th_clock);
 
         // Create body
@@ -139,7 +139,7 @@ Module.register('MMM-school-schedule', {
                 const thead_tr_th_day = document.createElement('th');
 
                 thead_tr_th_day.className =
-                    'school-schedule-th' + self.config.large ? ' large' : '';
+                    'school-schedule-th' + (self.config.large ? ' large' : '');
                 thead_tr_th_day.appendChild(
                     document.createTextNode(localeDay.toUpperCase())
                 );
