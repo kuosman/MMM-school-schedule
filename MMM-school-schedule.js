@@ -98,6 +98,7 @@ Module.register('MMM-school-schedule', {
      * @returns {object} html wrapper
      */
     getDom: function () {
+        const self = this;
         const schedule = this.getValidFirstSchedule();
         if (!schedule) {
             return document.createElement('div');
