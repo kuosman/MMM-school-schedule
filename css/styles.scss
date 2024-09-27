@@ -1,0 +1,58 @@
+table.school-schedule-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 14px;
+    font-family: sans-serif;
+    border: 1px solid #fff;
+
+    thead tr {
+        background-color: #fff;
+        color: #000000;
+        text-align: left;
+    }
+
+    .school-schedule-th,
+    .school-schedule-td {
+        padding: 6px 6px;
+        text-align: center;
+        font-size: 16px;
+        font-family: var(--font-primary), sans-serif;
+        font-weight: 300;
+        line-height: 1.25;
+        width: 85px;
+
+        &.large {
+            font-size: 32px;
+            width: 110px;
+        }
+    }
+
+    th:first-child,
+    td:first-child {
+        width: 100px;
+
+        &.large {
+            width: 180px;
+        }
+    }
+
+    .school-schedule-th {
+        font-weight: 600;
+    }
+
+    th, td {
+        border-left: 1px solid rgba(255,255,255,0.5);
+    }
+
+    tbody tr {
+        border-bottom: 1px solid #dddddd;
+        background-color: #000000;
+    }
+
+    td.active {
+        font-weight: bold;
+        background-color: rgb(30, 24, 66);
+    }
+}
+
+

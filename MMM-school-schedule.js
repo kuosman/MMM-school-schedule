@@ -14,6 +14,7 @@ Module.register('MMM-school-schedule', {
     defaults: {
         updateInterval: 1 * 60 * 60 * 1000, // 1 hour
         fadeSpeed: 4000,
+        large: false,
     },
 
     requiresVersion: '2.1.0', // Required version of MagicMirror
@@ -25,7 +26,7 @@ Module.register('MMM-school-schedule', {
      * @returns {Array} styles array
      */
     getStyles: function () {
-        return [this.file('MMM-school-schedule.css')];
+        return [this.file('css/styles.css')];
     },
 
     /**
@@ -119,7 +120,8 @@ Module.register('MMM-school-schedule', {
         thead_tr_th_clock.appendChild(
             document.createTextNode(this.translate('clock'))
         );
-        thead_tr_th_clock.className = 'school-schedule-th';
+        thead_tr_th_clock.className =
+            'school-schedule-th' + self.config.large ? ' large' : '';
         thead_tr.appendChild(thead_tr_th_clock);
 
         // Create body
@@ -135,7 +137,8 @@ Module.register('MMM-school-schedule', {
                 const localeDay = weekdaysCurrentLoc[index];
                 const thead_tr_th_day = document.createElement('th');
 
-                thead_tr_th_day.className = 'school-schedule-th';
+                thead_tr_th_day.className =
+                    'school-schedule-th' + self.config.large ? ' large' : '';
                 thead_tr_th_day.appendChild(
                     document.createTextNode(localeDay.toUpperCase())
                 );
@@ -147,7 +150,9 @@ Module.register('MMM-school-schedule', {
         times.forEach((t, i) => {
             const tbody_tr = document.createElement('tr');
             const tbody_tr_td = document.createElement('td');
-            tbody_tr_td.className = 'school-schedule-td bright';
+            tbody_tr_td.className =
+                'school-schedule-td' +
+                (self.config.large ? ' large bright' : ' bright');
             tbody_tr_td.appendChild(document.createTextNode(t.toUpperCase()));
             tbody_tr.appendChild(tbody_tr_td);
 
@@ -159,7 +164,9 @@ Module.register('MMM-school-schedule', {
                     const tbody_tr_td_day = document.createElement('td');
                     const activeClass = lowerCaseDay === dow ? 'active' : '';
                     tbody_tr_td_day.className =
-                        'school-schedule-td bright ' + activeClass;
+                        'school-schedule-td' +
+                        (self.config.large ? ' large bright ' : ' bright ') +
+                        activeClass;
                     tbody_tr_td_day.appendChild(document.createTextNode(text));
                     tbody_tr.appendChild(tbody_tr_td_day);
                 }
